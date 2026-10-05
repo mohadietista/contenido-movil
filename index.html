@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contenido mohadietista</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; connect-src https://api.github.com http://127.0.0.1:8787; frame-src blob:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0077B6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Contenido">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<script src="vendor/marked.min.js"></script>
+<script src="vendor/purify.min.js"></script>
+<script src="vendor/js-yaml.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --text:#14202b; --muted:#66727e; --line:#e1e6eb;
+  --accent:#0077B6; --accent-soft:#e3f1f9; --danger:#c0392b; --ok:#1e8e4e;
+  --yt:#e03131; --ig:#c2255c; --shadow:0 1px 2px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b1620; --card:#13212d; --text:#e6edf3; --muted:#93a1ae; --line:#22323f;
+    --accent:#3aa6e0; --accent-soft:#12324a; --danger:#ff6b5e; --ok:#4cc38a;
+    --yt:#ff6b6b; --ig:#f06595; --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+body{padding-bottom:env(safe-area-inset-bottom)}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:calc(env(safe-area-inset-top) + 10px) 16px 8px;border-bottom:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:8px}
+.grow{flex:1;min-width:0}
+h1.app{font-size:22px;margin:0;font-weight:700}
+.iconbtn{border:0;background:transparent;font-size:22px;padding:6px 8px;border-radius:10px;cursor:pointer;line-height:1}
+.iconbtn:active{background:var(--line)}
+.back{font-size:17px;color:var(--accent);padding:6px 4px}
+main{padding:12px 16px 110px;max-width:760px;margin:0 auto}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 13px;font-size:14px;white-space:nowrap;cursor:pointer}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{width:100%;margin-top:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-size:16px}
+.group{margin-top:18px}
+.group>summary{list-style:none;display:flex;align-items:center;gap:8px;font-weight:650;font-size:15px;cursor:pointer;padding:4px 0}
+.group>summary::-webkit-details-marker{display:none}
+.group>summary .count{color:var(--muted);font-weight:500}
+.group>summary::after{content:"›";margin-left:auto;color:var(--muted);transition:transform .15s;font-size:20px}
+.group[open]>summary::after{transform:rotate(90deg)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:8px;
+  text-decoration:none;color:inherit;box-shadow:var(--shadow);cursor:pointer}
+.card:active{opacity:.7}
+.card .t{font-weight:600;font-size:15.5px;line-height:1.35}
+.card .m{color:var(--muted);font-size:13px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.plat{font-weight:600}
+.plat.youtube{color:var(--yt)} .plat.instagram{color:var(--ig)}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:14px;font-weight:600;
+  background:var(--accent-soft);color:var(--text);border:1px solid var(--line);position:relative}
+.chip select{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+h2.title{font-size:22px;line-height:1.25;margin:4px 0 2px}
+.props{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:12px;font-size:14px}
+.props .p{display:flex;gap:10px;padding:8px 12px;border-top:1px solid var(--line)}
+.props .p:first-child{border-top:0}
+.props .k{color:var(--muted);width:118px;flex:none}
+.props .v{min-width:0;overflow-wrap:anywhere}
+.md{margin-top:14px;overflow-wrap:anywhere}
+.md h1{font-size:21px;margin:18px 0 6px}.md h2{font-size:19px;margin:20px 0 6px}.md h3{font-size:17px;margin:16px 0 4px}
+.md p{margin:8px 0}.md ul,.md ol{padding-left:22px;margin:8px 0}
+.md blockquote{margin:10px 0;padding:2px 12px;border-left:3px solid var(--line);color:var(--muted)}
+.md table{border-collapse:collapse;display:block;overflow-x:auto;font-size:14px;margin:10px 0}
+.md th,.md td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.md code{background:var(--accent-soft);padding:1px 4px;border-radius:4px;font-size:.9em}
+.md pre{background:var(--card);border:1px solid var(--line);padding:10px;border-radius:8px;overflow-x:auto}
+.md pre code{background:none;padding:0}
+.md img{max-width:100%;border-radius:8px}
+.md hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.md mark{background:#ffe066;color:#111;padding:0 2px;border-radius:3px}
+a.wl{text-decoration:none;border-bottom:1px solid currentColor;cursor:pointer}
+.missing{color:var(--muted);border-bottom:1px dashed var(--muted)}
+.callout{border:1px solid var(--line);border-left:4px solid var(--accent);background:var(--card);border-radius:10px;margin:10px 0;padding:0}
+.callout>summary,.callout>.ctitle{padding:10px 12px;font-weight:650;cursor:pointer;list-style:none}
+.callout>summary::-webkit-details-marker{display:none}
+details.callout>summary::before{content:"▸ ";color:var(--muted)}
+details.callout[open]>summary::before{content:"▾ "}
+.callout .cbody{padding:0 12px 6px;border-top:1px solid var(--line)}
+.c-warning,.c-caution,.c-danger{border-left-color:#e8590c}.c-tip,.c-success{border-left-color:var(--ok)}
+.c-question{border-left-color:#ae3ec9}.c-quote{border-left-color:var(--muted)}
+.embed{border-left:2px solid var(--line);padding-left:10px;margin:8px 0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.pdf{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;margin:6px 0;cursor:pointer;text-align:left}
+.actions{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:center}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;font-weight:600;cursor:pointer;flex:1;max-width:260px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.5}
+.fab{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:6;width:58px;height:58px;border-radius:50%;
+  border:0;background:var(--accent);color:#fff;font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+label.f{display:block;margin-top:14px;font-weight:600;font-size:14px}
+.inp{width:100%;margin-top:5px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-size:16px}
+textarea.inp{min-height:110px;resize:vertical}
+textarea.raw{width:100%;min-height:70vh;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px;
+  font:14px/1.5 ui-monospace,Menlo,monospace}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.seg label{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px}
+.seg input{display:none}
+.seg input:checked+span{color:var(--accent);font-weight:700}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom));z-index:20;
+  background:#14202b;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;max-width:90vw;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.toast.err{background:var(--danger)}
+.center{text-align:center;padding:40px 0;color:var(--muted)}
+.help{font-size:14px;color:var(--muted)}
+.help ol{padding-left:20px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+/* ---------- Configuración ---------- */
+const PHASES=[['idea','Idea'],['validacion','Validación'],['investigacion','Investigación'],['guion','Guion'],
+  ['por_grabar','Por grabar'],['por_editar','Por editar'],['programar','Programar'],['programado','Programado'],
+  ['publicado','Publicado'],['analizado','Analizado'],['aparcado','Aparcado'],['por_revisar','Por revisar']];
+const PHASE_COLOR={idea:'#94a3b8',validacion:'#ae3ec9',investigacion:'#0ca678',guion:'#1c7ed6',por_grabar:'#f76707',
+  por_editar:'#f59f00',programar:'#5c7cfa',programado:'#4263eb',publicado:'#2f9e44',analizado:'#2b8a3e',aparcado:'#adb5bd',por_revisar:'#e03131'};
+const FOLDED=new Set(['publicado','analizado','aparcado']);
+const FORMATO={largo:'Vídeo',short:'Short',reel:'Reel',carrusel:'Carrusel',story:'Story'};
+const TABS=[['todo','Todo'],['largo','Vídeos'],['short','Shorts'],['instagram','Instagram']];
+const SCAN=['01 Entrada/','04 Proyectos/'];
+const NEW_FOLDER='01 Entrada';
+const phaseLabel=f=>(PHASES.find(p=>p[0]===f)||[f,f||'Sin fase'])[1];
+
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}},
+};
+const qs=new URLSearchParams(location.search);
+let cfg=Object.assign({token:'',repo:'mohadietista/pkm',branch:'main',api:'https://api.github.com'},store.get('cfg',{}));
+if(qs.get('api')) cfg.api=qs.get('api');
+
+const S={tree:new Map(),byName:new Map(),notes:[],loaded:false,loadedAt:0,tab:store.get('tab','todo'),q:''};
+
+/* ---------- Utilidades ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nfc=s=>String(s).normalize('NFC');
+const base=p=>p.split('/').pop();
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function toast(msg,err){const t=document.createElement('div');t.className='toast'+(err?' err':'');t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),err?5000:2600)}
+function b64encode(str){const bytes=new TextEncoder().encode(str);let bin='';
+  for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)}
+function b64bytes(b64){const bin=atob(b64.replace(/\s/g,''));const u=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u}
+const encPath=p=>p.split('/').map(encodeURIComponent).join('/');
+const fmtDate=d=>{if(!d)return '';const m=String(d).match(/^(\d{4})-(\d\d)-(\d\d)/);return m?`${+m[3]}/${+m[2]}/${m[1].slice(2)}`:String(d)};
+
+/* ---------- GitHub ---------- */
+async function gh(path,opts={}){
+  const r=await fetch(cfg.api+path,Object.assign({},opts,{cache:'no-store',headers:Object.assign({
+    'Authorization':'Bearer '+cfg.token,'Accept':'application/vnd.github+json'},opts.headers||{})}));
+  if(r.status===401){location.hash='#/ajustes';throw new Error('La clave de GitHub no es válida o ha caducado.')}
+  if(!r.ok){let m='';try{m=(await r.json()).message}catch(e){}const er=new Error(`GitHub ${r.status}${m?': '+m:''}`);er.status=r.status;throw er}
+  return r.json();
+}
+async function loadTree(){
+  const d=await gh(`/repos/${cfg.repo}/git/trees/${encodeURIComponent(cfg.branch)}?recursive=1`);
+  S.tree=new Map();S.byName=new Map();
+  for(const it of d.tree){if(it.type!=='blob')continue;S.tree.set(it.path,it.sha);
+    const k=nfc(base(it.path)).toLowerCase();const prev=S.byName.get(k);
+    if(!prev||(prev.startsWith('08 Archivo')&&!it.path.startsWith('08 Archivo')))S.byName.set(k,it.path)}
+}
+async function getBlobBytes(sha){const d=await gh(`/repos/${cfg.repo}/git/blobs/${sha}`);return b64bytes(d.content)}
+async function getText(path){
+  const sha=S.tree.get(path);if(!sha)throw new Error('No encuentro '+path);
+  const k='b:'+sha;let t=null;try{t=localStorage.getItem(k)}catch(e){}
+  if(t!=null)return t;
+  t=new TextDecoder().decode(await getBlobBytes(sha));
+  try{localStorage.setItem(k,t)}catch(e){clearBlobCache();try{localStorage.setItem(k,t)}catch(e2){}}
+  return t;
+}
+function clearBlobCache(){try{Object.keys(localStorage).filter(k=>k.startsWith('b:')).forEach(k=>localStorage.removeItem(k))}catch(e){}}
+async function getFresh(path){ // lectura sin caché, justo antes de escribir
+  const d=await gh(`/repos/${cfg.repo}/contents/${encPath(path)}?ref=${encodeURIComponent(cfg.branch)}`);
+  return {sha:d.sha,text:new TextDecoder().decode(b64bytes(d.content))};
+}
+async function putText(path,text,message,sha){
+  const body={message,content:b64encode(text),branch:cfg.branch};if(sha)body.sha=sha;
+  const d=await gh(`/repos/${cfg.repo}/contents/${encPath(path)}`,{method:'PUT',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});
+  const nsha=d.content.sha;S.tree.set(path,nsha);S.byName.set(nfc(base(path)).toLowerCase(),path);
+  try{localStorage.setItem('b:'+nsha,text)}catch(e){}
+  upsertNote(path,text);return nsha;
+}
+
+/* ---------- Notas ---------- */
+function parseNote(path,text){
+  const m=text.match(/^---\r?\n([\s\S]*?)\r?\n---[ \t]*(\r?\n|$)/);let fm={},body=text;
+  if(m){try{fm=jsyaml.load(m[1])||{}}catch(e){fm={}}body=text.slice(m[0].length)}
+  const h=body.match(/^#\s+(.+)$/m);
+  return {path,fm,body,title:(h?h[1]:base(path).replace(/\.md$/,'')).trim()};
+}
+function upsertNote(path,text){
+  const n=parseNote(path,text);const i=S.notes.findIndex(x=>x.path===path);
+  const isContent=n.fm.tipo==='contenido'&&n.fm.plantilla!==true;
+  if(i>=0){if(isContent)S.notes[i]=n;else S.notes.splice(i,1)}else if(isContent)S.notes.push(n);
+}
+async function loadAll(force){
+  if(S.loaded&&!force)return;
+  const status=$('#status');
+  await loadTree();
+  const paths=[...S.tree.keys()].filter(p=>p.endsWith('.md')&&SCAN.some(s=>p.startsWith(s))&&!p.includes('/Plantillas/'));
+  const notes=[];let done=0;
+  const queue=paths.slice();
+  async function worker(){while(queue.length){const p=queue.shift();
+    try{const t=await getText(p);const n=parseNote(p,t);if(n.fm.tipo==='contenido'&&n.fm.plantilla!==true)notes.push(n)}catch(e){console.warn(p,e)}
+    done++;if(status)status.textContent=`Cargando notas… ${done}/${paths.length}`}}
+  await Promise.all(Array.from({length:8},worker));
+  S.notes=notes;S.loaded=true;S.loadedAt=Date.now();
+}
+function resolve(target){
+  let t=nfc(target.trim()).replace(/^\.?\//,'').toLowerCase();if(!t)return null;
+  if(t.includes('/')){const cands=[t,t+'.md'];for(const p of S.tree.keys()){const lp=nfc(p).toLowerCase();if(cands.some(c=>lp===c||lp.endsWith('/'+c)))return p}return null}
+  return S.byName.get(t)||S.byName.get(t+'.md')||null;
+}
+const linkName=v=>{const m=String(v||'').match(/\[\[([^\]|#]+)/);return m?m[1].trim():String(v||'').trim()};
+
+/* ---------- Markdown estilo Obsidian ---------- */
+marked.setOptions({gfm:true,breaks:true});
+function inlineMd(s){return DOMPurify.sanitize(marked.parseInline(wikilinks(s)))}
+function wikilinks(s){return s.replace(/\[\[([^\]]+?)\]\]/g,(_,t)=>{
+  const [target,alias]=t.split(/\\?\|/);const clean=target.split('#')[0].trim();
+  const label=alias||target.replace('#',' › ');const path=resolve(clean);
+  return path?`<a class="wl" data-path="${esc(path)}">${esc(label)}</a>`:`<span class="missing">${esc(label)}</span>`})}
+function renderMd(md){
+  const slots=[];const slot=h=>{slots.push(h);return `XSLOTX${slots.length-1}XENDX`};
+  const lines=md.replace(/\r/g,'').split('\n');const out=[];let fence=false;
+  for(let i=0;i<lines.length;i++){
+    if(/^\s*```/.test(lines[i]))fence=!fence;
+    const m=!fence&&lines[i].match(/^>\s*\[!([\w-]+)\]([+-]?)\s*(.*)$/);
+    if(m){const inner=[];while(i+1<lines.length&&/^>/.test(lines[i+1])){i++;inner.push(lines[i].replace(/^>\s?/,''))}
+      const type=m[1].toLowerCase(),title=m[3]||type.charAt(0).toUpperCase()+type.slice(1);
+      const ih=renderMd(inner.join('\n')),th=inlineMd(title);
+      out.push('',slot(m[2]?`<details class="callout c-${esc(type)}"${m[2]==='+'?' open':''}><summary>${th}</summary><div class="cbody">${ih}</div></details>`
+        :`<div class="callout c-${esc(type)}"><div class="ctitle">${th}</div><div class="cbody">${ih}</div></div>`),'');continue}
+    out.push(lines[i]);
+  }
+  let text=out.join('\n');
+  text=text.replace(/!\[\[([^\]]+?)\]\]/g,(_,t)=>slot(embedHtml(t)));
+  text=wikilinks(text).replace(/==([^=\n]+)==/g,'<mark>$1</mark>');
+  let html=DOMPurify.sanitize(marked.parse(text));
+  html=html.replace(/<p>XSLOTX(\d+)XENDX<\/p>/g,(_,n)=>slots[n]).replace(/XSLOTX(\d+)XENDX/g,(_,n)=>slots[n]);
+  return html;
+}
+function embedHtml(t){
+  const target=t.split(/\\?\|/)[0].split('#')[0].trim();const path=resolve(target);
+  if(!path)return `<span class="missing">${esc(target)}</span>`;
+  const ext=(path.match(/\.([a-z0-9]+)$/i)||[,''])[1].toLowerCase();
+  if(['png','jpg','jpeg','gif','webp','svg'].includes(ext))return `<img class="blobimg" data-path="${esc(path)}" alt="${esc(base(path))}">`;
+  if(ext==='md')return `<div class="embed" data-embed="${esc(path)}"><span class="muted small">Cargando…</span></div>`;
+  return `<button class="pdf" data-file="${esc(path)}">📄 ${esc(base(path))}</button>`;
+}
+function hydrate(root,depth=0){
+  root.querySelectorAll('.embed[data-embed]').forEach(el=>{
+    const closed=el.closest('details:not([open])');
+    if(closed&&root.contains(closed)){if(!closed._h){closed._h=1;closed.addEventListener('toggle',()=>hydrate(closed,depth),{once:true})}return}
+    const p=el.dataset.embed;el.removeAttribute('data-embed');
+    if(depth>2){el.innerHTML=`<a class="wl" data-path="${esc(p)}">${esc(base(p))}</a>`;return}
+    getText(p).then(t=>{el.innerHTML=renderMd(parseNote(p,t).body);hydrate(el,depth+1)})
+      .catch(e=>{el.innerHTML=`<span class="missing">${esc(e.message)}</span>`});
+  });
+  root.querySelectorAll('img.blobimg[data-path]').forEach(img=>{const p=img.dataset.path;img.removeAttribute('data-path');
+    fileUrl(p).then(u=>img.src=u).catch(()=>{})});
+}
+const urlCache=new Map();
+async function fileUrl(path){
+  if(urlCache.has(path))return urlCache.get(path);
+  const ext=(path.split('.').pop()||'').toLowerCase();
+  const type={pdf:'application/pdf',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',svg:'image/svg+xml'}[ext]||'application/octet-stream';
+  const u=URL.createObjectURL(new Blob([await getBlobBytes(S.tree.get(path))],{type}));urlCache.set(path,u);return u;
+}
+document.addEventListener('click',async e=>{
+  const a=e.target.closest('a.wl');if(a&&a.dataset.path.endsWith('.md')){e.preventDefault();go('#/n/'+encodeURIComponent(a.dataset.path));return}
+  const f=e.target.closest('button.pdf,a.wl');if(f){e.preventDefault();const w=window.open('','_blank');
+    try{const u=await fileUrl(f.dataset.file||f.dataset.path);if(w)w.location=u;else location.href=u}catch(er){if(w)w.close();toast(er.message,1)}}
+});
+
+/* ---------- Frontmatter ---------- */
+function yamlScalar(key,v){
+  if(v==null||v==='')return 'null';
+  if(key==='fase')return v;
+  return "'"+String(v).replace(/'/g,"''")+"'";
+}
+function setFM(text,key,value){
+  const m=text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if(!m)return `---\n${key}: ${yamlScalar(key,value)}\n---\n`+text;
+  const lines=m[1].split(/\r?\n/);const i=lines.findIndex(l=>l.startsWith(key+':'));
+  const line=`${key}: ${yamlScalar(key,value)}`;
+  if(i>=0){let j=i+1;while(j<lines.length&&/^(\s|-\s)/.test(lines[j]))j++;lines.splice(i,j-i,line)}else lines.push(line);
+  return text.replace(m[0],'---\n'+lines.join('\n')+'\n---');
+}
+
+/* ---------- Vistas ---------- */
+function go(h){if(location.hash===h)render();else location.hash=h}
+window.addEventListener('hashchange',render);
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&S.loaded&&Date.now()-S.loadedAt>120000&&(location.hash||'#/')==='#/')refresh(true)});
+
+async function render(){
+  const h=location.hash||'#/';window.scrollTo(0,0);
+  if(!cfg.token&&h!=='#/ajustes')return viewSettings(true);
+  try{
+    if(h==='#/ajustes')return viewSettings(false);
+    if(!S.loaded){$('#app').innerHTML=`<div class="center" id="status">Conectando con GitHub…</div>`;await loadAll()}
+    if(h.startsWith('#/n/'))return viewNote(decodeURIComponent(h.slice(4)));
+    if(h.startsWith('#/raw/'))return viewRaw(decodeURIComponent(h.slice(6)));
+    if(h.startsWith('#/datos/'))return viewData(decodeURIComponent(h.slice(8)));
+    if(h==='#/nueva')return viewNew();
+    viewList();
+  }catch(e){console.error(e);$('#app').innerHTML=`<main><div class="center">No he podido cargar los datos.<br><span class="small">${esc(e.message)}</span><br><br>
+    <button class="btn primary" onclick="refresh()">Reintentar</button> <button class="btn" onclick="go('#/ajustes')">Ajustes</button></div></main>`}
+}
+async function refresh(silent){
+  try{if(!silent)toast('Actualizando…');await loadAll(true);render()}catch(e){toast(e.message,1)}
+}
+function matchesTab(n,tab){
+  const f=n.fm;if(tab==='todo')return true;
+  if(tab==='instagram')return f.plataforma==='instagram';
+  return f.plataforma==='youtube'&&f.formato===tab;
+}
+function viewList(){
+  const q=nfc(S.q).toLowerCase();
+  const notes=S.notes.filter(n=>matchesTab(n,S.tab)&&(!q||nfc(n.title+' '+n.path).toLowerCase().includes(q)));
+  const groups=new Map(PHASES.map(p=>[p[0],[]]));
+  for(const n of notes){const f=n.fm.fase||'por_revisar';if(!groups.has(f))groups.set(f,[]);groups.get(f).push(n)}
+  const sortKey=n=>String(n.fm.fecha_objetivo||n.fm.fecha_publicacion||'9999')+String(n.fm.creado||'');
+  let html='';
+  for(const [f,list] of groups){if(!list.length)continue;
+    list.sort((a,b)=>sortKey(a).localeCompare(sortKey(b)));
+    html+=`<details class="group" ${FOLDED.has(f)&&!q?'':'open'}><summary><span class="dot" style="background:${PHASE_COLOR[f]||'#999'}"></span>${esc(phaseLabel(f))} <span class="count">${list.length}</span></summary>`;
+    for(const n of list){const fm=n.fm;const meta=[];
+      meta.push(`<span class="plat ${esc(fm.plataforma)}">${fm.plataforma==='instagram'?'◎':'▶'} ${esc(FORMATO[fm.formato]||fm.formato||'')}</span>`);
+      if(fm.fecha_publicacion)meta.push('Publicado '+fmtDate(fm.fecha_publicacion));
+      else if(fm.fecha_objetivo)meta.push('Objetivo '+fmtDate(fm.fecha_objetivo));
+      if(fm.fecha_revision)meta.push('Revisar '+fmtDate(fm.fecha_revision));
+      if(fm.derivado_de)meta.push('de «'+esc(linkName(fm.derivado_de))+'»');
+      if(fm.comprobar_estado)meta.push('⚠︎ comprobar estado');
+      html+=`<a class="card" href="#/n/${encodeURIComponent(n.path)}"><div class="t">${esc(n.title)}</div><div class="m">${meta.join('<span>·</span>')}</div></a>`}
+    html+='</details>'}
+  $('#app').innerHTML=`<header class="top"><div class="row"><h1 class="app grow">Contenido</h1>
+    <button class="iconbtn" aria-label="Actualizar" onclick="refresh()">↻</button><button class="iconbtn" aria-label="Ajustes" onclick="go('#/ajustes')">⚙︎</button></div>
+    <div class="tabs">${TABS.map(t=>`<button class="tab ${S.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
+    <input class="search" type="search" placeholder="Buscar" value="${esc(S.q)}"></header>
+    <main>${html||'<div class="center">No hay nada aquí todavía.</div>'}</main>
+    <button class="fab" aria-label="Nueva idea" onclick="go('#/nueva')">+</button>`;
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;store.set('tab',S.tab);viewList()});
+  const s=$('.search');s.oninput=()=>{S.q=s.value;const pos=s.selectionStart;viewList();const s2=$('.search');s2.focus();s2.setSelectionRange(pos,pos)};
+}
+function backBar(title,right=''){
+  return `<header class="top"><div class="row"><button class="iconbtn back" onclick="history.length>1?history.back():go('#/')">‹ Volver</button>
+    <div class="grow small muted" style="text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(title||'')}</div>${right}</div></header>`;
+}
+async function viewNote(path){
+  if(!S.tree.has(path)){$('#app').innerHTML=backBar('')+`<main><div class="center">Esta nota ya no existe o ha cambiado de sitio.</div></main>`;return}
+  const n=parseNote(path,await getText(path));const fm=n.fm;const isC=fm.tipo==='contenido';
+  let top='';
+  if(isC){
+    const opts=PHASES.map(p=>`<option value="${p[0]}" ${p[0]===fm.fase?'selected':''}>${p[1]}</option>`).join('');
+    top=`<div class="chips"><span class="chip"><span class="dot" style="background:${PHASE_COLOR[fm.fase]||'#999'}"></span>${esc(phaseLabel(fm.fase))} ▾
+      <select id="fase" aria-label="Cambiar fase">${opts}</select></span>
+      <span class="chip"><span class="plat ${esc(fm.plataforma)}">${fm.plataforma==='instagram'?'◎ Instagram':'▶ YouTube'}</span> · ${esc(FORMATO[fm.formato]||fm.formato||'')}</span></div>`;
+    const rows=[['fecha_objetivo','Fecha objetivo',fmtDate],['fecha_publicacion','Publicado',fmtDate],['fecha_revision','Próxima revisión',fmtDate],
+      ['url','Enlace',v=>`<a href="${esc(v)}" target="_blank" rel="noopener">${esc(String(v).replace(/^https?:\/\//,''))}</a>`],
+      ['titulo_publicado','Título publicado'],['concepto_miniatura','Miniatura'],['pilar','Pilar'],['duracion','Duración'],
+      ['derivado_de','Derivado de',v=>wikilinks(String(v))],['creado','Creado',fmtDate]];
+    const pr=rows.filter(r=>fm[r[0]]!=null&&fm[r[0]]!=='').map(r=>`<div class="p"><div class="k">${r[1]}</div><div class="v">${r[2]?r[2](fm[r[0]]):esc(fm[r[0]])}</div></div>`);
+    const rel=['temas','fuentes','conocimiento','referencias_editoriales'].filter(k=>Array.isArray(fm[k])&&fm[k].length).map(k=>
+      `<div class="p"><div class="k">${{temas:'Temas',fuentes:'Fuentes',conocimiento:'Conocimiento',referencias_editoriales:'Referencias'}[k]}</div>
+      <div class="v">${fm[k].map(v=>/\[\[/.test(String(v))?wikilinks(String(v)):esc(v)).join('<br>')}</div></div>`);
+    if(pr.length)top+=`<div class="props">${pr.join('')}</div>`;
+    if(rel.length)top+=`<details class="callout" style="margin-top:10px"><summary>Relaciones</summary><div class="props" style="border:0;margin:0">${rel.join('')}</div></details>`;
+  }
+  const derived=S.notes.filter(x=>x.fm.derivado_de&&resolve(linkName(x.fm.derivado_de))===path);
+  const der=derived.length?`<h3>Piezas derivadas</h3>`+derived.map(d=>`<a class="card" href="#/n/${encodeURIComponent(d.path)}"><div class="t">${esc(d.title)}</div>
+    <div class="m"><span class="plat ${esc(d.fm.plataforma)}">${esc(FORMATO[d.fm.formato]||'')}</span><span>·</span>${esc(phaseLabel(d.fm.fase))}</div></a>`).join(''):'';
+  const body=n.body.replace(/^#\s+.+\n?/m,'');
+  $('#app').innerHTML=backBar(isC?phaseLabel(fm.fase):base(path).replace(/\.md$/,''))+
+    `<main><h2 class="title">${esc(n.title)}</h2>${top}<div class="md" id="md">${renderMd(body)}</div>${der}
+     <p class="small muted" style="margin-top:28px">${esc(path)}</p></main>
+     <div class="actions">${isC?`<button class="btn" onclick="go('#/datos/${encodeURIComponent(path)}')">Editar datos</button>`:''}
+     <button class="btn" onclick="go('#/raw/${encodeURIComponent(path)}')">Editar texto</button></div>`;
+  hydrate($('#md'));
+  const sel=$('#fase');if(sel)sel.onchange=()=>saveFields(path,{fase:sel.value},`fase → ${phaseLabel(sel.value)}`).then(()=>viewNote(path));
+}
+async function saveFields(path,fields,summary){
+  toast('Guardando…');
+  try{const fresh=await getFresh(path);let t=fresh.text;for(const [k,v] of Object.entries(fields))t=setFM(t,k,v);
+    if(t===fresh.text){toast('Sin cambios');return}
+    await putText(path,t,`Móvil: ${parseNote(path,t).title} (${summary})`,fresh.sha);toast('Guardado ✓')}
+  catch(e){toast('No se ha guardado: '+e.message,1);throw e}
+}
+async function viewData(path){
+  const fm=parseNote(path,await getText(path)).fm;
+  const d=k=>{const m=String(fm[k]||'').match(/^\d{4}-\d\d-\d\d/);return m?m[0]:''};
+  $('#app').innerHTML=backBar('Editar datos')+`<main><h2 class="title">${esc(parseNote(path,await getText(path)).title)}</h2>
+    <label class="f">Fase<select class="inp" id="f_fase">${PHASES.map(p=>`<option value="${p[0]}" ${p[0]===fm.fase?'selected':''}>${p[1]}</option>`).join('')}</select></label>
+    <label class="f">Fecha objetivo<input class="inp" type="date" id="f_fecha_objetivo" value="${d('fecha_objetivo')}"></label>
+    <label class="f">Fecha de publicación<input class="inp" type="date" id="f_fecha_publicacion" value="${d('fecha_publicacion')}"></label>
+    <label class="f">Próxima revisión<input class="inp" type="date" id="f_fecha_revision" value="${d('fecha_revision')}"></label>
+    <label class="f">Enlace publicado<input class="inp" type="url" id="f_url" value="${esc(fm.url||'')}" placeholder="https://"></label>
+    <p class="help">Deja una fecha vacía para borrarla.</p></main>
+    <div class="actions"><button class="btn primary" id="save">Guardar</button></div>`;
+  $('#save').onclick=async()=>{
+    const keys=['fase','fecha_objetivo','fecha_publicacion','fecha_revision','url'];const ch={};
+    for(const k of keys){const v=$('#f_'+k).value.trim();const old=k==='url'||k==='fase'?String(fm[k]||''):d(k);if(v!==old)ch[k]=v||null}
+    if(!Object.keys(ch).length){history.back();return}
+    $('#save').disabled=true;
+    try{await saveFields(path,ch,Object.keys(ch).join(', '));history.back()}catch(e){$('#save').disabled=false}
+  };
+}
+async function viewRaw(path){
+  const sha0=S.tree.get(path);const text=await getText(path);
+  $('#app').innerHTML=backBar(base(path))+`<main><textarea class="raw" id="raw" spellcheck="true">${esc(text)}</textarea></main>
+    <div class="actions"><button class="btn primary" id="save">Guardar</button></div>`;
+  $('#save').onclick=async()=>{
+    const v=$('#raw').value;if(v===text){history.back();return}
+    $('#save').disabled=true;toast('Guardando…');
+    try{const fresh=await getFresh(path);
+      if(fresh.sha!==sha0){toast('Esta nota ha cambiado en el Mac mientras la editabas. Copia tu texto, vuelve a abrirla y pégalo.',1);$('#save').disabled=false;return}
+      await putText(path,v,`Móvil: edita ${parseNote(path,v).title}`,fresh.sha);toast('Guardado ✓');history.back()}
+    catch(e){toast('No se ha guardado: '+e.message,1);$('#save').disabled=false}
+  };
+}
+function newNoteText(kind,title,idea){
+  const d=today();
+  if(kind==='largo')return `---
+plantilla: false
+tipo: contenido
+canal: mohadietista
+plataforma: youtube
+formato: largo
+fase: idea
+creado: '${d}'
+---
+
+# ${title}
+
+**Idea:** ${idea||'Qué quiero contar, en una frase.'}
+
+**Siguiente paso:** Desarrollar la idea y elegir el enfoque.
+
+## Trabajo del vídeo
+
+[[${title} - Idea y enfoque|💡 Idea y enfoque]]
+
+[[${title} - Investigación|📚 Investigación]]
+
+[[${title} - Título y miniatura|🖼️ Título y miniatura]]
+
+[[${title} - Guion|🎬 Guion]]
+
+[[${title} - Publicación y resultados|📤 Publicación y resultados]]
+
+[[00 - MOC Canal YouTube|← Todos mis vídeos]]
+`;
+  const plat=kind==='short'?'youtube':'instagram';
+  return `---
+plantilla: false
+tipo: contenido
+canal: mohadietista
+plataforma: ${plat}
+formato: ${kind}
+fase: idea
+temas: []
+fuentes: []
+conocimiento: []
+derivado_de: null
+fecha_objetivo: null
+fecha_publicacion: null
+fecha_revision: null
+url: null
+creado: '${d}'
+---
+
+# ${title}
+
+## Idea, audiencia y promesa
+${idea?'\n'+idea+'\n':''}
+## Validación e inspiración
+
+## Afirmaciones a comprobar y fuentes
+
+## Guion
+
+- Gancho verbal y visual:
+- Desarrollo:
+- Cierre o siguiente paso:
+
+## Producción
+
+- Recursos y material:
+- Qué falta hacer:
+
+## Publicación y resultado
+`;
+}
+function viewNew(){
+  const kind=store.get('lastKind','reel');
+  $('#app').innerHTML=backBar('Nueva idea')+`<main><h2 class="title">Nueva idea</h2>
+    <div class="seg">${[['largo','▶ Vídeo YouTube'],['short','▶ Short'],['reel','◎ Reel Instagram']].map(k=>
+      `<label><input type="radio" name="kind" value="${k[0]}" ${k[0]===kind?'checked':''}><span>${k[1]}</span></label>`).join('')}</div>
+    <label class="f">Título<input class="inp" id="n_title" placeholder="De qué va, en pocas palabras" autocomplete="off"></label>
+    <label class="f">La idea en una frase<textarea class="inp" id="n_idea" placeholder="Qué quiero contar y a quién"></textarea></label>
+    <p class="help">Se guarda en «${NEW_FOLDER}» con fase Idea, usando tu plantilla. En Obsidian aparecerá en las vistas de contenido.</p></main>
+    <div class="actions"><button class="btn primary" id="save">Guardar idea</button></div>`;
+  $('#n_title').focus();
+  $('#save').onclick=async()=>{
+    const k=document.querySelector('input[name=kind]:checked').value;
+    const title=$('#n_title').value.replace(/[\\/:*?"<>|#^\[\]]/g,' ').replace(/\s+/g,' ').trim();
+    const idea=$('#n_idea').value.trim();
+    if(!title){toast('Ponle un título',1);return}
+    const path=`${NEW_FOLDER}/${title}.md`;
+    if(S.tree.has(path)||resolve(title)){toast('Ya existe una nota con ese título',1);return}
+    $('#save').disabled=true;toast('Guardando…');store.set('lastKind',k);
+    try{await putText(path,newNoteText(k,title,idea),`Móvil: nueva idea «${title}»`);toast('Idea guardada ✓');
+      history.replaceState(null,'','#/n/'+encodeURIComponent(path));render()}
+    catch(e){toast('No se ha guardado: '+e.message,1);$('#save').disabled=false}
+  };
+}
+function viewSettings(first){
+  $('#app').innerHTML=(first?`<header class="top"><h1 class="app">Contenido</h1></header>`:backBar('Ajustes'))+`<main>
+    ${first?'<p>Esta app lee y guarda tus fichas de contenido directamente en tu bóveda de GitHub. Obsidian las recibe al sincronizar.</p>':''}
+    <label class="f">Clave de GitHub (token)<input class="inp" type="password" id="s_token" value="${esc(cfg.token)}" autocomplete="off" placeholder="github_pat_…"></label>
+    <div class="help"><ol>
+      <li>Abre <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Nuevo token (fine-grained)</a>.</li>
+      <li>En <b>Repository access</b> elige <b>Only select repositories</b> → <b>${esc(cfg.repo)}</b>.</li>
+      <li>En <b>Permissions → Contents</b> elige <b>Read and write</b>.</li>
+      <li>Genera el token, cópialo y pégalo aquí. Solo se guarda en este móvil.</li></ol></div>
+    <label class="f">Repositorio<input class="inp" id="s_repo" value="${esc(cfg.repo)}" autocapitalize="off"></label>
+    <label class="f">Rama<input class="inp" id="s_branch" value="${esc(cfg.branch)}" autocapitalize="off"></label>
+    <p style="margin-top:22px"><button class="btn" id="s_cache">Vaciar caché</button></p></main>
+    <div class="actions"><button class="btn primary" id="save">Guardar</button></div>`;
+  $('#s_cache').onclick=()=>{clearBlobCache();S.loaded=false;toast('Caché vaciada')};
+  $('#save').onclick=()=>{cfg.token=$('#s_token').value.trim();cfg.repo=$('#s_repo').value.trim();cfg.branch=$('#s_branch').value.trim()||'main';
+    const saved=Object.assign({},cfg);if(qs.get('api'))delete saved.api;store.set('cfg',saved);S.loaded=false;go('#/')};
+}
+render();
+</script>
+</body>
+</html>
