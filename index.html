@@ -105,6 +105,11 @@ details.callout[open]>summary::before{content:"▾ "}
 .btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;font-weight:600;cursor:pointer;flex:1;max-width:260px}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn:disabled{opacity:.5}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.undo{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 14px;font-size:14px;margin-top:4px}
+.undo .btn{flex:none;padding:6px 12px}
+label.check{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:6px;cursor:pointer}
+label.check input{margin-right:8px;transform:scale(1.2)}
 .fab{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:6;width:58px;height:58px;border-radius:50%;
   border:0;background:var(--accent);color:#fff;font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 label.f{display:block;margin-top:14px;font-weight:600;font-size:14px}
@@ -176,10 +181,37 @@ async function gh(path,opts={}){
 }
 async function loadTree(){
   const d=await gh(`/repos/${cfg.repo}/git/trees/${encodeURIComponent(cfg.branch)}?recursive=1`);
-  S.tree=new Map();S.byName=new Map();
-  for(const it of d.tree){if(it.type!=='blob')continue;S.tree.set(it.path,it.sha);
-    const k=nfc(base(it.path)).toLowerCase();const prev=S.byName.get(k);
-    if(!prev||(prev.startsWith('08 Archivo')&&!it.path.startsWith('08 Archivo')))S.byName.set(k,it.path)}
+  S.tree=new Map();
+  for(const it of d.tree)if(it.type==='blob')S.tree.set(it.path,it.sha);
+  rebuildNames();
+}
+function rebuildNames(){
+  S.byName=new Map();
+  for(const p of S.tree.keys()){const k=nfc(base(p)).toLowerCase();const prev=S.byName.get(k);
+    if(!prev||(prev.startsWith('08 Archivo')&&!p.startsWith('08 Archivo')))S.byName.set(k,p)}
+}
+/* Mueve varios archivos en un único commit, sin volver a subir su contenido */
+async function moveFiles(pairs,message){
+  const R=`/repos/${cfg.repo}/git`,J={'Content-Type':'application/json'};
+  for(let attempt=0;;attempt++){
+    const head=(await gh(`${R}/ref/heads/${encodeURIComponent(cfg.branch)}`)).object.sha;
+    const commit=await gh(`${R}/commits/${head}`);
+    const cur=new Map((await gh(`${R}/trees/${commit.tree.sha}?recursive=1`)).tree.filter(i=>i.type==='blob').map(i=>[i.path,i]));
+    const entries=[];
+    for(const [from,to] of pairs){const it=cur.get(from);
+      if(!it)throw new Error('Ya no existe: '+base(from));if(cur.has(to))throw new Error('Ya existe: '+to);
+      entries.push({path:to,mode:it.mode,type:'blob',sha:it.sha},{path:from,mode:it.mode,type:'blob',sha:null})}
+    const tree=await gh(`${R}/trees`,{method:'POST',headers:J,body:JSON.stringify({base_tree:commit.tree.sha,tree:entries})});
+    const nc=await gh(`${R}/commits`,{method:'POST',headers:J,body:JSON.stringify({message,tree:tree.sha,parents:[head]})});
+    try{await gh(`${R}/refs/heads/${encodeURIComponent(cfg.branch)}`,{method:'PATCH',headers:J,body:JSON.stringify({sha:nc.sha})})}
+    catch(e){if(e.status===422&&attempt<2)continue;throw e} // alguien subió cambios entre medias: reintentar
+    S.tree=new Map([...cur].map(([p,i])=>[p,i.sha]));
+    for(const [from,to] of pairs){S.tree.set(to,cur.get(from).sha);S.tree.delete(from)}
+    rebuildNames();
+    S.notes=S.notes.filter(n=>!pairs.some(p=>p[0]===n.path));
+    for(const [,to] of pairs)if(to.endsWith('.md')&&SCAN.some(s=>to.startsWith(s)))upsertNote(to,await getText(to));
+    return;
+  }
 }
 async function getBlobBytes(sha){const d=await gh(`/repos/${cfg.repo}/git/blobs/${sha}`);return b64bytes(d.content)}
 async function getText(path){
@@ -325,6 +357,7 @@ async function render(){
     if(h.startsWith('#/n/'))return viewNote(decodeURIComponent(h.slice(4)));
     if(h.startsWith('#/raw/'))return viewRaw(decodeURIComponent(h.slice(6)));
     if(h.startsWith('#/datos/'))return viewData(decodeURIComponent(h.slice(8)));
+    if(h.startsWith('#/descartar/'))return viewDiscard(decodeURIComponent(h.slice(12)));
     if(h==='#/nueva')return viewNew();
     viewList();
   }catch(e){console.error(e);$('#app').innerHTML=`<main><div class="center">No he podido cargar los datos.<br><span class="small">${esc(e.message)}</span><br><br>
@@ -361,9 +394,13 @@ function viewList(){
     <button class="iconbtn" aria-label="Actualizar" onclick="refresh()">↻</button><button class="iconbtn" aria-label="Ajustes" onclick="go('#/ajustes')">⚙︎</button></div>
     <div class="tabs">${TABS.map(t=>`<button class="tab ${S.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
     <input class="search" type="search" placeholder="Buscar" value="${esc(S.q)}"></header>
-    <main>${html||'<div class="center">No hay nada aquí todavía.</div>'}</main>
+    <main>${S.lastMove?`<div class="undo"><span class="grow">«${esc(S.lastMove.title)}» descartado</span><button class="btn" id="undo">Deshacer</button></div>`:''}
+    ${html||'<div class="center">No hay nada aquí todavía.</div>'}</main>
     <button class="fab" aria-label="Nueva idea" onclick="go('#/nueva')">+</button>`;
   document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;store.set('tab',S.tab);viewList()});
+  const u=$('#undo');if(u)u.onclick=async()=>{const m=S.lastMove;u.disabled=true;toast('Recuperando…');
+    try{await moveFiles(m.pairs.map(([a,b])=>[b,a]),`Móvil: recupera «${m.title}»`);S.lastMove=null;toast('Recuperado ✓');viewList()}
+    catch(e){toast('No se ha podido deshacer: '+e.message,1);u.disabled=false}};
   const s=$('.search');s.oninput=()=>{S.q=s.value;const pos=s.selectionStart;viewList();const s2=$('.search');s2.focus();s2.setSelectionRange(pos,pos)};
 }
 function backBar(title,right=''){
@@ -394,7 +431,8 @@ async function viewNote(path){
   const der=derived.length?`<h3>Piezas derivadas</h3>`+derived.map(d=>`<a class="card" href="#/n/${encodeURIComponent(d.path)}"><div class="t">${esc(d.title)}</div>
     <div class="m"><span class="plat ${esc(d.fm.plataforma)}">${esc(FORMATO[d.fm.formato]||'')}</span><span>·</span>${esc(phaseLabel(d.fm.fase))}</div></a>`).join(''):'';
   const body=n.body.replace(/^#\s+.+\n?/m,'');
-  $('#app').innerHTML=backBar(isC?phaseLabel(fm.fase):base(path).replace(/\.md$/,''))+
+  $('#app').innerHTML=backBar(isC?phaseLabel(fm.fase):base(path).replace(/\.md$/,''),
+      isC?`<button class="iconbtn" aria-label="Descartar" onclick="go('#/descartar/${encodeURIComponent(path)}')">🗑</button>`:'')+
     `<main><h2 class="title">${esc(n.title)}</h2>${top}<div class="md" id="md">${renderMd(body)}</div>${der}
      <p class="small muted" style="margin-top:28px">${esc(path)}</p></main>
      <div class="actions">${isC?`<button class="btn" onclick="go('#/datos/${encodeURIComponent(path)}')">Editar datos</button>`:''}
@@ -439,6 +477,37 @@ async function viewRaw(path){
       if(fresh.sha!==sha0){toast('Esta nota ha cambiado en el Mac mientras la editabas. Copia tu texto, vuelve a abrirla y pégalo.',1);$('#save').disabled=false;return}
       await putText(path,v,`Móvil: edita ${parseNote(path,v).title}`,fresh.sha);toast('Guardado ✓');history.back()}
     catch(e){toast('No se ha guardado: '+e.message,1);$('#save').disabled=false}
+  };
+}
+const DISCARD_DIR='08 Archivo/Descartados';
+function viewDiscard(path){
+  const n=S.notes.find(x=>x.path===path);if(!n){go('#/');return}
+  const dir=path.slice(0,path.lastIndexOf('/'));
+  // Un vídeo con carpeta propia (YouTube/Vídeos/NN - …) se descarta con todo su expediente
+  const ownFolder=/\/YouTube\/V[ií]deos\/[^/]+$/.test(nfc(dir))&&!n.fm.derivado_de;
+  const files=ownFolder?[...S.tree.keys()].filter(p=>p.startsWith(dir+'/')):[path];
+  const derived=S.notes.filter(x=>x.path!==path&&x.fm.derivado_de&&resolve(linkName(x.fm.derivado_de))===path);
+  const dIn=derived.filter(d=>files.includes(d.path)),dOut=derived.filter(d=>!files.includes(d.path));
+  const main=files.filter(p=>!dIn.some(d=>d.path===p));
+  const li=p=>`<li>${esc(ownFolder?p.slice(dir.length+1):base(p))}</li>`;
+  $('#app').innerHTML=backBar('Descartar')+`<main><h2 class="title">Descartar «${esc(n.title)}»</h2>
+    <p>Se moverá a <b>${DISCARD_DIR}</b>. Deja de verse aquí y en tus vistas de Obsidian, pero no se borra: puedes deshacerlo justo después o recuperarlo en Obsidian cuando quieras.</p>
+    <p class="small muted">${ownFolder?`Se mueve la carpeta del vídeo (${main.length} archivo${main.length>1?'s':''}):`:'Archivo:'}</p><ul class="small">${main.map(li).join('')}</ul>
+    ${dIn.length?`<p class="small muted">Piezas que salen de este vídeo. Marca las que también quieras descartar:</p>`+dIn.map(d=>
+      `<label class="check"><input type="checkbox" value="${esc(d.path)}"> ${esc(d.title)} <span class="muted small">· ${esc(phaseLabel(d.fm.fase))}</span></label>`).join(''):''}
+    ${dOut.length?`<p class="small muted">Estas piezas derivadas se quedan como están:</p><ul class="small">${dOut.map(d=>`<li>${esc(d.title)}</li>`).join('')}</ul>`:''}
+    </main><div class="actions"><button class="btn danger" id="go">Descartar</button></div>`;
+  $('#go').onclick=async()=>{
+    const extra=[...document.querySelectorAll('.check input:checked')].map(i=>i.value);
+    const move=main.concat(extra);const taken=new Set(S.tree.keys());
+    const uniq=p=>{let q=p,i=2;while(taken.has(q)||[...taken].some(t=>t.startsWith(q+'/')))q=p.replace(/(\.[^./]+)?$/,m=>` (${i})`+m),i++;return q};
+    let pairs;
+    if(ownFolder){const root=uniq(`${DISCARD_DIR}/${base(dir)}`);pairs=move.map(p=>[p,root+p.slice(dir.length)])}
+    else pairs=move.map(p=>{const to=uniq(`${DISCARD_DIR}/${base(p)}`);taken.add(to);return [p,to]});
+    $('#go').disabled=true;toast('Descartando…');
+    try{await moveFiles(pairs,`Móvil: descarta «${n.title}»`);S.lastMove={pairs,title:n.title};toast('Descartado ✓');
+      history.replaceState(null,'','#/');render()}
+    catch(e){toast('No se ha descartado: '+e.message,1);$('#go').disabled=false}
   };
 }
 function newNoteText(kind,title,idea){
