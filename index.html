@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Contenido mohadietista</title>
+<title>Panel mohadietista</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; connect-src https://api.github.com http://127.0.0.1:8787; frame-src blob:; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0077B6">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Contenido">
+<meta name="apple-mobile-web-app-title" content="Panel">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
@@ -127,6 +127,55 @@ textarea.raw{width:100%;min-height:70vh;border:1px solid var(--line);background:
 .center{text-align:center;padding:40px 0;color:var(--muted)}
 .help{font-size:14px;color:var(--muted)}
 .help ol{padding-left:20px}
+
+/* ---------- Panel «Hoy» ---------- */
+.nav{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px}
+.nav a{flex:1;text-align:center;padding:6px 14px;border-radius:9px;text-decoration:none;color:var(--muted);font-weight:650;font-size:14.5px}
+.nav a.on{background:var(--accent);color:#fff}
+.hero{position:relative;overflow:hidden;border-radius:20px;padding:20px 20px 18px;margin-top:4px;color:#fff;
+  background:radial-gradient(120% 140% at 100% 0%,#00b4d8 0%,#0077B6 45%,#023e8a 100%);box-shadow:0 10px 30px rgba(0,119,182,.25)}
+.hero .d{font-size:13px;opacity:.85;letter-spacing:.2px}
+.hero .g{font-size:24px;font-weight:750;margin-top:2px;line-height:1.2}
+.hero .s{font-size:14px;opacity:.9;margin-top:6px}
+.ring{--p:0;width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(#fff calc(var(--p)*1%),rgba(255,255,255,.22) 0)}
+.ring span{width:50px;height:50px;border-radius:50%;background:#0a5f95;display:grid;place-items:center;font-weight:750;font-size:15px}
+.sec{margin-top:22px}
+.sec>h3{display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:700}
+.sec>h3 .n{margin-left:auto;font-weight:600;letter-spacing:0;text-transform:none}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.box+.box{margin-top:10px}
+.box .bh{display:flex;align-items:center;gap:8px;padding:11px 14px 6px;font-weight:700;font-size:15px}
+.box .bh .n{margin-left:auto;color:var(--muted);font-weight:600;font-size:13px}
+.bar{height:5px;border-radius:9px;background:var(--line);margin:0 14px 6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:9px;transition:width .3s}
+.task{display:flex;gap:11px;align-items:flex-start;padding:9px 14px;border-top:1px solid var(--line);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.task.sub{padding-left:42px}
+.task .cb{width:22px;height:22px;border-radius:7px;border:2px solid var(--muted);flex:none;margin-top:1px;display:grid;place-items:center;transition:all .15s}
+.task.done .cb{background:var(--ok);border-color:var(--ok)}
+.task.done .cb::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.task .tx{flex:1;min-width:0;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.task.done .tx{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.task.busy{opacity:.5;pointer-events:none}
+.note{margin:4px 14px 10px;padding:8px 11px;border-radius:10px;background:var(--accent-soft);font-size:13.5px;line-height:1.4}
+.item{display:flex;gap:12px;align-items:center;padding:11px 14px;border-top:1px solid var(--line);text-decoration:none;color:inherit}
+.box>.item:first-child{border-top:0}
+.item .when{flex:none;width:46px;text-align:center;border-radius:11px;background:var(--accent-soft);padding:5px 0;line-height:1.1}
+.item .when b{display:block;font-size:17px}.item .when small{font-size:11px;color:var(--muted);text-transform:uppercase}
+.item .w{flex:1;min-width:0}.item .t{font-weight:600;font-size:15px;line-height:1.3}.item .m{color:var(--muted);font-size:13px;margin-top:2px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;box-shadow:var(--shadow)}
+.kpi .l{font-size:12.5px;color:var(--muted);font-weight:600}
+.kpi .v{font-size:26px;font-weight:780;margin-top:2px;line-height:1.1}
+.kpi .v small{font-size:14px;color:var(--muted);font-weight:600}
+.kpi .bar{margin:8px 0 0}
+details.more{margin-top:10px}
+details.more>summary{list-style:none;cursor:pointer;color:var(--accent);font-weight:650;font-size:14.5px;padding:6px 2px}
+details.more>summary::-webkit-details-marker{display:none}
+details.more .md{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 14px 10px;margin-top:6px}
+.empty{padding:14px;color:var(--muted);font-size:14px}
+@media (min-width:900px){main.home{max-width:1100px;display:grid;grid-template-columns:1.35fr 1fr;gap:0 24px;align-items:start}
+  main.home .hero{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -140,7 +189,9 @@ const PHASES=[['idea','Idea'],['validacion','Validación'],['investigacion','Inv
 const PHASE_COLOR={idea:'#94a3b8',validacion:'#ae3ec9',investigacion:'#0ca678',guion:'#1c7ed6',por_grabar:'#f76707',
   por_editar:'#f59f00',programar:'#5c7cfa',programado:'#4263eb',publicado:'#2f9e44',analizado:'#2b8a3e',aparcado:'#adb5bd',por_revisar:'#e03131'};
 const FOLDED=new Set(['publicado','analizado','aparcado']);
-const FORMATO={largo:'Vídeo',short:'Short',reel:'Reel',carrusel:'Carrusel',story:'Story'};
+const FORMATO={largo:'Vídeo',short:'Short',reel:'Reel',carrusel:'Carrusel',story:'Story',vertical:'Vertical'};
+const DIARY=d=>`06 Diario/${d}.md`;
+const PANEL='07 Sistema/Panel/Panel de negocio.md';
 const TABS=[['todo','Todo'],['largo','Vídeos'],['short','Shorts'],['instagram','Instagram']];
 const SCAN=['01 Entrada/','04 Proyectos/'];
 const NEW_FOLDER='01 Entrada';
@@ -154,7 +205,7 @@ const qs=new URLSearchParams(location.search);
 let cfg=Object.assign({token:'',repo:'mohadietista/pkm',branch:'main',api:'https://api.github.com'},store.get('cfg',{}));
 if(qs.get('api')) cfg.api=qs.get('api');
 
-const S={tree:new Map(),byName:new Map(),notes:[],loaded:false,loadedAt:0,tab:store.get('tab','todo'),q:''};
+const S={tree:new Map(),byName:new Map(),notes:[],projects:[],loaded:false,loadedAt:0,tab:store.get('tab','todo'),q:''};
 
 /* ---------- Utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -239,6 +290,7 @@ async function putText(path,text,message,sha){
 function parseNote(path,text){
   const m=text.match(/^---\r?\n([\s\S]*?)\r?\n---[ \t]*(\r?\n|$)/);let fm={},body=text;
   if(m){try{fm=jsyaml.load(m[1])||{}}catch(e){fm={}}body=text.slice(m[0].length)}
+  for(const k in fm)if(fm[k] instanceof Date)fm[k]=fm[k].toISOString().slice(0,10); // YAML convierte las fechas sin comillas en Date
   const h=body.match(/^#\s+(.+)$/m);
   return {path,fm,body,title:(h?h[1]:base(path).replace(/\.md$/,'')).trim()};
 }
@@ -252,13 +304,14 @@ async function loadAll(force){
   const status=$('#status');
   await loadTree();
   const paths=[...S.tree.keys()].filter(p=>p.endsWith('.md')&&SCAN.some(s=>p.startsWith(s))&&!p.includes('/Plantillas/'));
-  const notes=[];let done=0;
+  const notes=[],projects=[];let done=0;
   const queue=paths.slice();
   async function worker(){while(queue.length){const p=queue.shift();
-    try{const t=await getText(p);const n=parseNote(p,t);if(n.fm.tipo==='contenido'&&n.fm.plantilla!==true)notes.push(n)}catch(e){console.warn(p,e)}
+    try{const t=await getText(p);const n=parseNote(p,t);if(n.fm.plantilla===true){}else if(n.fm.tipo==='contenido')notes.push(n);
+      else if(n.fm.tipo==='proyecto'&&n.fm.estado==='activo')projects.push(n)}catch(e){console.warn(p,e)}
     done++;if(status)status.textContent=`Cargando notas… ${done}/${paths.length}`}}
   await Promise.all(Array.from({length:8},worker));
-  S.notes=notes;S.loaded=true;S.loadedAt=Date.now();
+  S.notes=notes;S.projects=projects;S.loaded=true;S.loadedAt=Date.now();
 }
 function resolve(target){
   let t=nfc(target.trim()).replace(/^\.?\//,'').toLowerCase();if(!t)return null;
@@ -346,7 +399,7 @@ function setFM(text,key,value){
 function go(h){if(location.hash===h)render();else location.hash=h}
 window.addEventListener('hashchange',render);
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&S.loaded&&Date.now()-S.loadedAt>120000&&(location.hash||'#/')==='#/')refresh(true)});
+  if(document.visibilityState==='visible'&&S.loaded&&Date.now()-S.loadedAt>120000&&['#/','#/contenido'].includes(location.hash||'#/'))refresh(true)});
 
 async function render(){
   const h=location.hash||'#/';window.scrollTo(0,0);
@@ -359,7 +412,8 @@ async function render(){
     if(h.startsWith('#/datos/'))return viewData(decodeURIComponent(h.slice(8)));
     if(h.startsWith('#/descartar/'))return viewDiscard(decodeURIComponent(h.slice(12)));
     if(h==='#/nueva')return viewNew();
-    viewList();
+    if(h==='#/contenido')return viewList();
+    viewHome();
   }catch(e){console.error(e);$('#app').innerHTML=`<main><div class="center">No he podido cargar los datos.<br><span class="small">${esc(e.message)}</span><br><br>
     <button class="btn primary" onclick="refresh()">Reintentar</button> <button class="btn" onclick="go('#/ajustes')">Ajustes</button></div></main>`}
 }
@@ -390,14 +444,14 @@ function viewList(){
       if(fm.comprobar_estado)meta.push('⚠︎ comprobar estado');
       html+=`<a class="card" href="#/n/${encodeURIComponent(n.path)}"><div class="t">${esc(n.title)}</div><div class="m">${meta.join('<span>·</span>')}</div></a>`}
     html+='</details>'}
-  $('#app').innerHTML=`<header class="top"><div class="row"><h1 class="app grow">Contenido</h1>
+  $('#app').innerHTML=`<header class="top"><div class="row"><div class="grow">${navBar('contenido')}</div>
     <button class="iconbtn" aria-label="Actualizar" onclick="refresh()">↻</button><button class="iconbtn" aria-label="Ajustes" onclick="go('#/ajustes')">⚙︎</button></div>
     <div class="tabs">${TABS.map(t=>`<button class="tab ${S.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
     <input class="search" type="search" placeholder="Buscar" value="${esc(S.q)}"></header>
     <main>${S.lastMove?`<div class="undo"><span class="grow">«${esc(S.lastMove.title)}» descartado</span><button class="btn" id="undo">Deshacer</button></div>`:''}
     ${html||'<div class="center">No hay nada aquí todavía.</div>'}</main>
     <button class="fab" aria-label="Nueva idea" onclick="go('#/nueva')">+</button>`;
-  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;store.set('tab',S.tab);viewList()});
+  document.querySelectorAll('.tab[data-tab]').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;store.set('tab',S.tab);viewList()});
   const u=$('#undo');if(u)u.onclick=async()=>{const m=S.lastMove;u.disabled=true;toast('Recuperando…');
     try{await moveFiles(m.pairs.map(([a,b])=>[b,a]),`Móvil: recupera «${m.title}»`);S.lastMove=null;toast('Recuperado ✓');viewList()}
     catch(e){toast('No se ha podido deshacer: '+e.message,1);u.disabled=false}};
@@ -506,7 +560,7 @@ function viewDiscard(path){
     else pairs=move.map(p=>{const to=uniq(`${DISCARD_DIR}/${base(p)}`);taken.add(to);return [p,to]});
     $('#go').disabled=true;toast('Descartando…');
     try{await moveFiles(pairs,`Móvil: descarta «${n.title}»`);S.lastMove={pairs,title:n.title};toast('Descartado ✓');
-      history.replaceState(null,'','#/');render()}
+      history.replaceState(null,'','#/contenido');render()}
     catch(e){toast('No se ha descartado: '+e.message,1);$('#go').disabled=false}
   };
 }
@@ -622,6 +676,102 @@ function viewSettings(first){
   $('#s_cache').onclick=()=>{clearBlobCache();S.loaded=false;toast('Caché vaciada')};
   $('#save').onclick=()=>{cfg.token=$('#s_token').value.trim();cfg.repo=$('#s_repo').value.trim();cfg.branch=$('#s_branch').value.trim()||'main';
     const saved=Object.assign({},cfg);if(qs.get('api'))delete saved.api;store.set('cfg',saved);S.loaded=false;go('#/')};
+}
+
+/* ---------- Panel «Hoy» ---------- */
+const navBar=on=>`<nav class="nav"><a href="#/" class="${on==='hoy'?'on':''}">Hoy</a><a href="#/contenido" class="${on==='contenido'?'on':''}">Contenido</a></nav>`;
+function addDays(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+const TASK_RE=/^(\s*)(?:[-*+]|\d+[.)])\s+\[([ xX])\]\s+(.*)$/;
+/* Tareas de un apartado «## …» de la nota, agrupadas por sus «### …» */
+function parseSection(text,heading){
+  const lines=text.replace(/\r/g,'').split('\n');const groups=[];let inSec=false,g=null;
+  for(let i=0;i<lines.length;i++){const l=lines[i];
+    if(/^##\s/.test(l)){inSec=l.replace(/^##\s+/,'').trim().toLowerCase().startsWith(heading);g=null;continue}
+    if(!inSec)continue;
+    if(/^###\s/.test(l)){g={title:l.replace(/^###\s+/,'').trim(),items:[]};groups.push(g);continue}
+    const m=l.match(TASK_RE);
+    if(m&&m[3].trim()){if(!g){g={title:'',items:[]};groups.push(g)}
+      g.items.push({kind:'task',line:i,raw:l,sub:m[1].replace(/\t/g,'    ').length>=2,done:m[2]!==' ',text:m[3]});continue}
+    const q=l.match(/^>\s?(.*)$/);
+    if(q&&q[1].trim()&&g&&g.items.length)g.items.push({kind:'note',text:q[1]});
+  }
+  return groups.filter(x=>x.items.some(i=>i.kind==='task'));
+}
+async function toggleTask(path,line,raw){
+  const f=await getFresh(path);const lines=f.text.split('\n');
+  let i=line;if((lines[i]||'').replace(/\r$/,'')!==raw){i=lines.findIndex(l=>l.replace(/\r$/,'')===raw)}
+  if(i<0)throw new Error('La tarea ha cambiado en Obsidian. Actualiza y vuelve a probar.');
+  const m=lines[i].match(TASK_RE);const done=m[2]!==' ';
+  lines[i]=lines[i].replace(/\[([ xX])\]/,done?'[ ]':'[x]');
+  await putText(path,lines.join('\n'),`Móvil: ${done?'reabre':'completa'} «${m[3].replace(/\*\*/g,'').slice(0,60)}»`,f.sha);
+  return !done;
+}
+const DOW=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MON=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+function niceDate(iso){const d=new Date(iso+'T12:00:00');const w=DOW[d.getDay()];return `${w[0].toUpperCase()+w.slice(1)}, ${d.getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][d.getMonth()]}`}
+function taskBox(title,items,path){
+  const tasks=items.filter(i=>i.kind==='task');const done=tasks.filter(i=>i.done).length;
+  let h=`<div class="box">${title?`<div class="bh">${inlineMd(title)}<span class="n">${done}/${tasks.length}</span></div>
+    <div class="bar"><i style="width:${tasks.length?Math.round(done*100/tasks.length):0}%"></i></div>`:''}`;
+  for(const it of items){
+    if(it.kind==='note'){h+=`<div class="note">${inlineMd(it.text)}</div>`;continue}
+    h+=`<div class="task${it.sub?' sub':''}${it.done?' done':''}" data-path="${esc(path)}" data-line="${it.line}" data-raw="${esc(it.raw)}">
+      <span class="cb"></span><span class="tx">${inlineMd(it.text)}</span></div>`}
+  return h+'</div>';
+}
+async function viewHome(){
+  const d=today(),ayer=addDays(d,-1);
+  const read=async p=>S.tree.has(p)?await getText(p):null;
+  const [hoyTxt,ayerTxt,panelTxt]=await Promise.all([read(DIARY(d)),read(DIARY(ayer)),read(PANEL)]);
+  const hoy=hoyTxt?parseSection(hoyTxt,'plan del día'):[];
+  const pend=ayerTxt?parseSection(ayerTxt,'pendiente para mañana').map(g=>({title:g.title,items:g.items.filter(i=>i.kind!=='task'||!i.done)})).filter(g=>g.items.some(i=>i.kind==='task')):[];
+  const all=hoy.flatMap(g=>g.items.filter(i=>i.kind==='task'));const nDone=all.filter(i=>i.done).length;
+  const pct=all.length?Math.round(nDone*100/all.length):0;
+  const hr=new Date().getHours();const saludo=hr<6?'Buenas noches':hr<14?'Buenos días':hr<21?'Buenas tardes':'Buenas noches';
+  const resto=all.length-nDone;
+
+  let left=`<section class="sec"><h3>✅ Hoy<span class="n">${hoyTxt?`<a href="#/n/${encodeURIComponent(DIARY(d))}">Abrir nota</a>`:''}</span></h3>`;
+  left+=hoy.length?hoy.map(g=>taskBox(g.title,g.items,DIARY(d))).join(''):`<div class="box"><div class="empty">${hoyTxt?'La nota de hoy no tiene tareas en «Plan del día».':'Todavía no hay nota de hoy. Ábrela en Obsidian (icono del calendario) y aparecerá aquí.'}</div></div>`;
+  left+='</section>';
+  if(pend.length)left+=`<section class="sec"><h3>↩︎ Pendiente de ayer</h3>${pend.map(g=>taskBox(g.title,g.items,DIARY(ayer))).join('')}</section>`;
+
+  const limit=addDays(d,7);
+  const pubs=S.notes.filter(n=>{const f=n.fm.fecha_objetivo;return f&&String(f)>=d&&String(f)<=limit&&!['publicado','analizado','aparcado'].includes(n.fm.fase)})
+    .sort((a,b)=>String(a.fm.fecha_objetivo).localeCompare(String(b.fm.fecha_objetivo)));
+  let right=`<section class="sec"><h3>📅 Próximos 7 días<span class="n">${pubs.length}</span></h3><div class="box">`;
+  right+=pubs.length?pubs.map(n=>{const fm=n.fm;const dd=new Date(String(fm.fecha_objetivo)+'T12:00:00');
+    const pl=String(fm.plataforma||'');const plat=fm.formato==='vertical'?'Trial Reel + Short':pl==='instagram'?'Instagram':pl==='youtube'?'YouTube':pl.charAt(0).toUpperCase()+pl.slice(1);
+    return `<a class="item" href="#/n/${encodeURIComponent(n.path)}"><div class="when"><b>${dd.getDate()}</b><small>${MON[dd.getMonth()]}</small></div>
+      <div class="w"><div class="t">${esc(n.title)}</div><div class="m"><span class="dot" style="display:inline-block;background:${PHASE_COLOR[fm.fase]||'#999'}"></span> ${esc(phaseLabel(fm.fase))} · ${esc(FORMATO[fm.formato]||fm.formato||'')} · ${plat}</div></div></a>`}).join('')
+    :'<div class="empty">Nada con fecha esta semana.</div>';
+  right+='</div></section>';
+
+  right+=`<section class="sec"><h3>🎯 Proyectos activos<span class="n">${S.projects.length}/3</span></h3><div class="box">`;
+  right+=S.projects.length?S.projects.map(p=>`<a class="item" href="#/n/${encodeURIComponent(p.path)}"><div class="w"><div class="t">${esc(p.title)}</div>
+      <div class="m">→ ${esc(p.fm.siguiente_accion||'Sin siguiente acción')}${p.fm.fecha_objetivo?' · hasta '+fmtDate(p.fm.fecha_objetivo):''}</div></div></a>`).join('')
+    :'<div class="empty">No hay proyectos activos.</div>';
+  right+='</div></section>';
+
+  if(panelTxt){const p=parseNote(PANEL,panelTxt);const fm=p.fm;const ca=+fm.clientes_activos||0;
+    right+=`<section class="sec"><h3>📊 Negocio<span class="n">${fm.actualizado?'al '+fmtDate(fm.actualizado):''}</span></h3><div class="kpis">
+      <div class="kpi"><div class="l">Clientes activos</div><div class="v">${ca}<small> / 100</small></div><div class="bar"><i style="width:${Math.min(ca,100)}%"></i></div></div>
+      <div class="kpi"><div class="l">Suscriptores YouTube</div><div class="v">${esc(fm.yt_suscriptores??'–')}</div><div class="l" style="margin-top:6px">${esc(fm.yt_videos??'')} vídeos</div></div></div>
+      <details class="more"><summary>Ver el panel completo ›</summary><div class="md">${renderMd(p.body.replace(/<!--[\s\S]*?-->/g,''))}</div></details></section>`}
+
+  $('#app').innerHTML=`<header class="top"><div class="row"><div class="grow">${navBar('hoy')}</div>
+    <button class="iconbtn" aria-label="Actualizar" onclick="refresh()">↻</button><button class="iconbtn" aria-label="Ajustes" onclick="go('#/ajustes')">⚙︎</button></div></header>
+    <main class="home"><div class="hero"><div class="row"><div class="grow"><div class="d">${niceDate(d)}</div><div class="g">${saludo}, Moha</div>
+      <div class="s">${all.length?(resto?`Te quedan ${resto} de ${all.length} tareas`:'¡Todo hecho por hoy! 🎉'):'Sin tareas para hoy'}</div></div>
+      <div class="ring" style="--p:${pct}"><span>${pct}%</span></div></div></div>
+      <div>${left}</div><div>${right}</div></main>`;
+  document.querySelectorAll('.task').forEach(el=>el.onclick=async e=>{
+    if(e.target.closest('a'))return;
+    el.classList.add('busy');
+    try{const now=await toggleTask(el.dataset.path,+el.dataset.line,el.dataset.raw);if(navigator.vibrate)navigator.vibrate(10);
+      toast(now?'Hecho ✓':'Reabierta');viewHome()}
+    catch(er){el.classList.remove('busy');toast(er.message,1)}});
+  hydrate($('#app'));
 }
 render();
 </script>
